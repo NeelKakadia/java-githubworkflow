@@ -28,11 +28,18 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build
 
-    - name: Build and Push Docker Image
-      uses: mr-smithers-excellent/docker-build-push@v4
+    - name: setup docker Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Login to Dockerhub
+      uses: docker/login-action@v3
       with:
-        image: neelkakadia/java_githubworkflow
-        registry: docker.io
-        username: ${{ secrets.DOCKER_USERNAME }}
+        username: ${{ secrets.DOCKER_USERNAME }} 
         password: ${{ secrets.DOCKER_PASSWORD }}
-         
+
+    - name: Docker build and push
+      uses: docker/build-push-action@v5
+      with: 
+        context: .
+        push: true
+        tags: user/app:latest
